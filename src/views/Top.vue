@@ -45,7 +45,7 @@ export default {
     },
     selectedFile(e){
       e.preventDefault();
-      console.log(e.target.result);
+      // console.log(e.target.result);
       
       let files = Array.from(e.target.files);
       this.files=files

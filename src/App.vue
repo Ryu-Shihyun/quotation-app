@@ -126,6 +126,13 @@ export default {
     // function(){
     // effects isLoginをtrue
     // }
+    $route(){
+      if(this.$route.path=="/" || this.$route.path=="/fileData/edit"){
+        this.webName="見積査定"
+      }else{
+        this.webName="履歴"
+      }
+    }
   }
 }
 </script>

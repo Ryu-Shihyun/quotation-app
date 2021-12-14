@@ -2,12 +2,13 @@
   <div class="home">
     <div class="file-view">
       <!-- アップロードしたファイルを並べるエリア -->
-      
-      <div class="add-button">
-        <div>+</div>
-        <input type="file" name="file" accept=".pdf" @change="addFile" multiple>
+      <div class="view-header">
+        <div class="add-button">
+          <div>+</div>
+          <input type="file" name="file" accept=".pdf" @change="addFile" multiple>
+        </div>
+        <div class="number-and-date">  {{assess_num}}<br/>{{date}}</div>
       </div>
-      <div class="date-and-number">{{date}}</div>
       <div v-for="(file,k) in files" v-bind:key="k" class="file-item">
         <!-- <iframe src="${file.name}" width="400px" heitght="600px"></iframe> -->
         {{file.name}}
@@ -24,7 +25,7 @@
              ファイルドロップからのアクセスか、見積査定状態かによって変わる -->
       </p>
       <button :class="changeButton(false)" v-bind:disabled="isComplete">一括ダウンロード</button>
-      <router-link to="/" class="cancel-button">取消</router-link>
+      <router-link to="/" class="cancel-button"><p>取消</p></router-link>
     </div>
   </div>
 </template>
@@ -32,7 +33,7 @@
 <script>
 export default {
   name:"FileData",
-  props:['data','log'],
+  props:['data','log','assess_num'],
   data(){
     return{
       files:[],
@@ -142,14 +143,19 @@ export default {
 }
 .file-view{
   height: 100%;
-  width:66%;
+  width:80%;
+}
+.view-header{
+  height: 50px;
+  margin-bottom: 10px;
 }
 .add-button{
   margin-left:40px;
   height:30px;
   width:30px;
+  margin-top:20px;
   display:flex;
-  
+  position: absolute;
   justify-content: center;
   align-items: center;
   border-radius: 50%;
@@ -159,16 +165,20 @@ export default {
 .add-button input[type="file"]{
   opacity: 0;
   position: absolute;
+  height: 30px;
+  width:30px;
 
 }
-
+.number-and-date{
+  margin-top:10px;
+}
 .file-item{
   float:left;
 }
 
 .file-manager{
   height :100%;
-  width:34%;
+  width:20%;
   padding:0px 10px 0px 10px;
   display:flex;
   flex-direction:column;
@@ -180,6 +190,7 @@ export default {
 .button-true{
   height:45px;
   margin:15px;
+  padding:0px;
   background-color: rgb(98, 144, 228);
   border-radius: 10px;
   color: white;
@@ -195,6 +206,7 @@ export default {
   color: black;
   border: none;
   font-size: 15px;
+  padding:0px;
 }
 .cancel-button{
   height:45px;
@@ -203,6 +215,11 @@ export default {
   border-radius: 10px;
   color: white;
   border: none;
+  text-decoration: none;
+  
+}
+.cancel-button p{
   font-size: 15px;
+  margin-top:12px;
 }
 </style>
