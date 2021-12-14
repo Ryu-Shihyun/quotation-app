@@ -14,7 +14,7 @@
         <div class="app-name">自動査定システム</div>
         <div class="page-name">{{webName}}</div>
         <ul class="header-ui">
-          <li>
+          <li @click="displayLog">
             <img src="" alt="log">
             履歴
 
@@ -24,9 +24,9 @@
               日時を表示
               指定した日時のデータをprops  -->
               <!-- modalを使うか、ドロップダウンメニューとしてつくるか検討 -->
-            <ul >
-              <li v-for="(d,i) in datesArray" v-bind:key="i">
-                <router-link to="/fileData">{{d}}</router-link>
+            <ul id="log-menue" >
+              <li v-for="(d,i) in datesArray" v-bind:key="i" class="log-date">
+                <router-link :to="{name:'FileData',params:{log:d}}"  >{{d}}</router-link>
               </li>
             </ul>
           </li>
@@ -102,6 +102,14 @@ export default {
       //effects filesをファイルの配列に代入
       this.files = files;
       this.moveToFileData();
+    },
+    displayLog(){
+      const log = document.getElementById("log-menue")
+      if(log.style.display == "none"){
+        log.style.display = "block";
+      }else{
+        log.style.display = "none";
+      }
     }
 
   },
@@ -118,6 +126,9 @@ export default {
 
 </style>
 <style>
+body{
+  margin:0px;
+}
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -127,9 +138,12 @@ export default {
 }
 
 #nav {
-  padding: 30px;
+  padding: 10px;
+  height:50px;
   display:flex;
-  justify-content: space-between;
+  justify-content: space-around;
+  border-block-end: solid;
+  border-block-end-color: #e6e6e6;
 
 }
 
@@ -142,10 +156,22 @@ export default {
   color: #42b983;
 }
 
+.app-name{
+  margin-top:10px;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.page-name{
+  margin-top:20px;
+  font-size:18px;
+}
+
 .header-ui{
   display: flex;
   justify-content: space-between;
   padding:0px;
+  width:200px
 }
 
 .header-ui li{
@@ -162,10 +188,17 @@ export default {
   height: 200px;
   margin:5px;
   padding: 0px;
-  position: absolute;
-  background-color: azure;
+  border: solid;
+  /* position: absolute; */
+  background-color: rgb(236, 236, 236);
 }
+.log-date{
+  height: 15px;
+  margin: 10px;
+}
+/*
 .header-ui li:hover ul{
   display: block;
 }
+*/
 </style>

@@ -10,17 +10,19 @@
 
       <div class="select-button">
         <!-- テキスト「＋ PDFファイルを選択してください」 -->
-        <div>+</div>
-        <div>
+        <h1>+</h1>
+        <h4>
           PDFファイルを選択してください
-        </div>
+        </h4>
         <input type="file" name="file" accept=".pdf" @change="selectedFile" multiple>
       </div>
       <div>
-        または、ここにPDFファイルをドロップしてください
-      </div>
-      <div>
-        <!-- テキスト「または～32MBです」 -->
+        <h4>
+          または、ここにPDFファイルをドロップしてください
+        </h4>
+        <h6>
+          ＊ファイル容量制限は32MBです
+        </h6>
       </div>
     </div>
   </div>
@@ -43,10 +45,15 @@ export default {
     },
     selectedFile(e){
       e.preventDefault();
+      console.log(e.target.result);
+      
       let files = Array.from(e.target.files);
       this.files=files
       this.$emit("handOverFile",this.files)
     }
+  },
+  mounted(){
+    this.$emit("handOverFile",this.files)
   }
 }
 </script>
@@ -61,26 +68,32 @@ export default {
 }
 .drag-and-drop{
   display: flex;
-  justify-content: space-between;
+  justify-content: space-evenly;
   flex-direction: column;
-  margin:3px;
-  padding: 0px;
+  margin:2em;
+  padding: 1em;
   height:80%;
   width:80%;
-  background-color: rgb(218, 214, 214);
+  background-color: rgb(236, 236, 236);
 }
 .select-button{
-  margin-left:40px;
-  height:30px;
-  width:80%;
+  /* margin-left:70px; */
+  height:70px;
+  width:100%;
   display:flex;
-  justify-content: space-around;
-  background-color: rgb(57, 96, 226);
+  justify-content: space-evenly;
+  background-color: rgb(98, 144, 228);
+  border-radius: 30px;
   color: white;
+}
+.select-button h1{
+  margin-top:17px
 }
 .select-button input[type="file"]{
   opacity: 0;
   position: absolute;
+  height:70px;
+  
 
 }
 </style>

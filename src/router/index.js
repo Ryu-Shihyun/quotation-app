@@ -14,7 +14,8 @@ const routes = [
   {
     path: '/fileData',
     name: 'FileData',
-    component: FileData
+    component: FileData,
+    props: true,
     
   }
 ]

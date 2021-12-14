@@ -2,11 +2,14 @@
   <div class="home">
     <div class="file-view">
       <!-- アップロードしたファイルを並べるエリア -->
+      
       <div class="add-button">
         <div>+</div>
         <input type="file" name="file" accept=".pdf" @change="addFile" multiple>
       </div>
+      <div class="date-and-number">{{date}}</div>
       <div v-for="(file,k) in files" v-bind:key="k">
+        <!-- <iframe src="${file.name}" width="400px" heitght="600px"></iframe> -->
         {{file.name}}
         <button @click="removeFile(k)">x</button>
       </div>
@@ -14,14 +17,14 @@
     <div class="file-manager">
       <!-- 見積査定、一括ダウンロード、取消 or 新規査定 -->
       <p>PDfからEXCEL</p>
-      <button>見積査定</button>
+      <button :class="changeButton(true)" v-bind:disabled="isComplete">見積査定</button>
       <p>
         準備が整ったら、見積査定ボタンを押してください
         <!-- Messageに変更予定。履歴からのアクセスか、
              ファイルドロップからのアクセスか、見積査定状態かによって変わる -->
       </p>
-      <button>一括ダウンロード</button>
-      <router-link to="/">取消</router-link>
+      <button :class="changeButton(false)" v-bind:disabled="isComplete">一括ダウンロード</button>
+      <router-link to="/" class="cancel-button">取消</router-link>
     </div>
   </div>
 </template>
@@ -29,7 +32,7 @@
 <script>
 export default {
   name:"FileData",
-  props:['data'],
+  props:['data','log'],
   data(){
     return{
       files:[],
@@ -90,17 +93,38 @@ export default {
         this.files = [...event.dataTransfer.files];
       }
       
+    },
+    changeButton(isAssessment){
+      if(isAssessment){
+        if(this.isComplete){
+          return "button-false"
+        }else{
+          return "button-true"
+        }
+      }else{
+        if(this.isComplete){
+          return "button-true"
+        }else{
+          return "button-false"
+        }
+      }
     }
   },
   mounted(){
-    this.files = this.data;
+    // let reader = new FileReader()
+    // this.data.forEach(el => {
+    //   this.files.push({data:el, url:reader.readAsDataURL(el)})
+    // });
+    this.files = this.data
+    this.date = this.log
+    this.isComplete = (this.log!=undefined)
   }
 }
 </script>
 
 <style>
 .home{
-  height:800px;
+  height:900px;
   width:100%;
   display:flex;
   justify-content: center;
@@ -131,7 +155,40 @@ export default {
 .file-manager{
   height :100%;
   width:34%;
+  padding:0px 10px 0px 10px;
   display:flex;
   flex-direction:column;
+  border-left: solid;
+}
+.assessment-button{
+  height:60px;
+}
+.button-true{
+  height:45px;
+  margin:15px;
+  background-color: rgb(98, 144, 228);
+  border-radius: 10px;
+  color: white;
+  border: none;
+  font-size: 15px;
+  
+}
+.button-false{
+  height:45px;
+  margin:15px;
+  background-color: rgb(204, 204, 204);
+  border-radius: 10px;
+  color: black;
+  border: none;
+  font-size: 15px;
+}
+.cancel-button{
+  height:45px;
+  margin:15px;
+  background-color: rgb(98, 144, 228);
+  border-radius: 10px;
+  color: white;
+  border: none;
+  font-size: 15px;
 }
 </style>
