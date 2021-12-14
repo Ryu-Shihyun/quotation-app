@@ -12,7 +12,7 @@ const routes = [
     component: Top
   },
   {
-    path: '/fileData',
+    path: '/fileData/:assess_num',
     name: 'FileData',
     component: FileData,
     props: true,

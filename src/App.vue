@@ -26,7 +26,8 @@
               <!-- modalを使うか、ドロップダウンメニューとしてつくるか検討 -->
             <ul id="log-menue" >
               <li v-for="(d,i) in datesArray" v-bind:key="i" class="log-date">
-                <router-link :to="{name:'FileData',params:{log:d}}"  >{{d}}</router-link>
+                <router-link :to="{name:'FileData',params:{log:d, assess_num:assessmentNumber[i]}}"  >{{d}}</router-link>
+                <!-- <div @click="changeToLog(d)">{{d}}</div> -->
               </li>
             </ul>
           </li>
@@ -37,7 +38,7 @@
         </ul>
       </div>
 
-       <router-view @handOverFile="getFile" v-bind:data="files"/>
+       <router-view @handOverFile="getFile" v-bind:data="files" v-bind:log="selected_date"/>
        <!-- Topの場合、emitされたファイルの配列を格納するためにgetFileを呼び出す -->
     </div>
    
@@ -56,12 +57,14 @@ export default {
     return{
       isLogin:true,//ログインの可否
       files:[],//ユーザ、サーバからimportしたファイルの入れ子の配列
+      assessmentNumber:["xxxxxxxxxx","oooooooooo","aaaaaaaaa"],
       selected_date:"",//履歴で選択された日時のデータ(Date() or String)
       datesArray:["2021-12-04","2021-12-03","2021-11-23"],//サーバから入手した日時のデータの配列（新しい順にソート済み)
       webName:"見積査定",// webページの題名
       ID:"",// ユーザID
     }
   },
+  inheritAttrs: false,
   methods:{
     moveToFileData(){
       //requires ファイルの入れ子配列が空ではない時 & router-viewがHomeの時
@@ -69,18 +72,23 @@ export default {
       //effects  router-viewをFileDataにする
       //         ファイルの入れ子配列をFileDataに送る
       if(this.files.length > 0){
-        this.$router.push('/fileData');
+        this.$router.push({name:'FileData',params:{assess_num:'edit'}});
         // this.files.length = 0;
       }
     },
-    /*
-    changeToFileData(){
-      //requires 履歴で選択された時
-      //effects router-viewをFileDataにする
-      //        履歴で選択された日時のデータをFileDataに送る
-      //        webページの
+    
+    changeToLog(date){
+      //requires 履歴で選択された時、TopからかFileDataからか
+      //effects Topだったらprops指定して遷移
+      //        FileDataだったらpropsの値を変える
+      if(this.$route.path=="/"){
+        this.$router.push({name:'FileData',params:{log:date}})
+      }else if(this.$route.path=="/fileData"){
+        // this.$route.params['log']=date
+        this.selected_date = date
+      }
     },
-    */
+    
     getLogDate(){
       //requires ログインに成功した時&ユーザがサーバ上にあるとき
       //effects サーバからユーザの履歴のデータを入手
@@ -141,7 +149,7 @@ body{
   padding: 10px;
   height:50px;
   display:flex;
-  justify-content: space-around;
+  justify-content: space-between;
   border-block-end: solid;
   border-block-end-color: #e6e6e6;
 
@@ -171,7 +179,7 @@ body{
   display: flex;
   justify-content: space-between;
   padding:0px;
-  width:200px
+  /* width:200px */
 }
 
 .header-ui li{
@@ -184,12 +192,14 @@ body{
 
 .header-ui ul{
   display: none;
-  width:120px;
+  width:200px;
   height: 200px;
   margin:5px;
   padding: 0px;
   border: solid;
-  /* position: absolute; */
+  margin-top:50px;
+  right: 5px;
+  position: absolute;
   background-color: rgb(236, 236, 236);
 }
 .log-date{

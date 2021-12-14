@@ -8,7 +8,7 @@
         <input type="file" name="file" accept=".pdf" @change="addFile" multiple>
       </div>
       <div class="date-and-number">{{date}}</div>
-      <div v-for="(file,k) in files" v-bind:key="k">
+      <div v-for="(file,k) in files" v-bind:key="k" class="file-item">
         <!-- <iframe src="${file.name}" width="400px" heitght="600px"></iframe> -->
         {{file.name}}
         <button @click="removeFile(k)">x</button>
@@ -117,7 +117,17 @@ export default {
     // });
     this.files = this.data
     this.date = this.log
-    this.isComplete = (this.log!=undefined)
+    this.isComplete = (this.log!="")
+  },
+  // inheritAttrs:false,
+  watch:{
+    $route(){
+      this.data.length=0;//ここでデータをサーバからとる
+                        // 今は初期化しているが、サーバ取得の関数に後ほど変更
+      this.files = this.data
+      this.date = this.log
+      this.isComplete = (this.log!="")
+    }
   }
 }
 </script>
@@ -150,6 +160,10 @@ export default {
   opacity: 0;
   position: absolute;
 
+}
+
+.file-item{
+  float:left;
 }
 
 .file-manager{

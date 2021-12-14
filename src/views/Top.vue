@@ -54,6 +54,7 @@ export default {
   },
   mounted(){
     this.$emit("handOverFile",this.files)
+    
   }
 }
 </script>
@@ -81,14 +82,20 @@ export default {
   height:70px;
   width:100%;
   display:flex;
-  justify-content: space-evenly;
+  justify-content: flex-start;
   background-color: rgb(98, 144, 228);
   border-radius: 30px;
   color: white;
 }
 .select-button h1{
-  margin-top:17px
+  margin-top:17px;
+  width:100px;
 }
+.select-button h4{
+  width:80%;
+  text-align: center;
+}
+
 .select-button input[type="file"]{
   opacity: 0;
   position: absolute;
