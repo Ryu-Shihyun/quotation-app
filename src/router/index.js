@@ -2,6 +2,8 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Top from '../views/Top.vue'
 import FileData from '../views/FileData.vue'
+import LoginSetting from '../views/LoginSetting.vue'
+
 
 Vue.use(VueRouter)
 
@@ -17,7 +19,12 @@ const routes = [
     component: FileData,
     props: true,
     
-  }
+  },
+  {
+    path: '/loginSetting',
+    name: 'LoginSetting',
+    component: LoginSetting,
+  },
 ]
 
 const router = new VueRouter({

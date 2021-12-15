@@ -4,15 +4,18 @@
       <!-- アップロードしたファイルを並べるエリア -->
       <div class="view-header">
         <div class="add-button">
-          <div>+</div>
+          <div class="file-num"><p>{{files.length}}</p></div>
+          <h1>+</h1>
           <input type="file" name="file" accept=".pdf" @change="addFile" multiple>
         </div>
         <div class="number-and-date">  {{assess_num}}<br/>{{date}}</div>
       </div>
       <div v-for="(file,k) in files" v-bind:key="k" class="file-item">
         <!-- <iframe src="${file.name}" width="400px" heitght="600px"></iframe> -->
-        {{file.name}}
         <button @click="removeFile(k)">x</button>
+        <img src="@/assets/pdf_icon2.jpeg" alt="">
+        <div>{{file.name}}</div>
+        
       </div>
     </div>
     <div class="file-manager">
@@ -43,6 +46,7 @@ export default {
       isAbleToDrop:true,//ドロップ許可のtrue or false
       isComplete:false,// 送信の完了のtrue or false
       Message:"",//状態のメッセージ
+      isUpload:true,
     }
   },
   methods:{
@@ -109,7 +113,7 @@ export default {
           return "button-false"
         }
       }
-    }
+    },
   },
   mounted(){
     // let reader = new FileReader()
@@ -129,7 +133,15 @@ export default {
       this.date = this.log
       this.isComplete = (this.log!="")
     }
-  }
+  },
+  created: function () {
+    window.onbeforeunload = function () {
+      return '保存されていないデータは破棄されます。'
+    }
+ },
+destroyed () {
+    window.onbeforeunload = null
+ }
 }
 </script>
 
@@ -143,16 +155,16 @@ export default {
 }
 .file-view{
   height: 100%;
-  width:80%;
+  width:75%;
 }
 .view-header{
-  height: 50px;
+  height: 90px;
   margin-bottom: 10px;
 }
 .add-button{
   margin-left:40px;
-  height:30px;
-  width:30px;
+  height:60px;
+  width:60px;
   margin-top:20px;
   display:flex;
   position: absolute;
@@ -162,23 +174,68 @@ export default {
   background-color: rgb(84, 122, 247);
   color: white;
 }
+
 .add-button input[type="file"]{
   opacity: 0;
   position: absolute;
-  height: 30px;
-  width:30px;
+  height: 60px;
+  width:60px;
 
 }
+
+.file-num{
+  position: absolute;
+  height: 20px;
+  width: 20px;
+  border:solid;
+  border-color: rgb(84, 143, 252);
+  border-radius: 50%;
+  background-color: white;
+  color: rgb(84, 122, 247);
+  font-size:10px;
+  right:-4px;
+  top:-7px;
+}
+
+.file-num p{
+  margin-top:5px;
+}
+
 .number-and-date{
   margin-top:10px;
 }
 .file-item{
   float:left;
+  position:relative;
+  border: solid;
+  border-width: 1px;
+  margin:5px;
 }
-
+.file-item button{
+  position:absolute;
+  border-radius: 50%;
+  background-color: black;
+  color:white;
+  height: 20px;
+  width:20px;
+  border-width: 0px;
+  right:-4px;
+  top:-4px;
+}
+.file-item img{
+  height:200px;
+  width:200px;
+}
+.file-item div{
+  font-size:6px;
+  position: absolute;
+  width:100%;
+  text-align: center;
+  bottom:5px;
+}
 .file-manager{
   height :100%;
-  width:20%;
+  width:25%;
   padding:0px 10px 0px 10px;
   display:flex;
   flex-direction:column;
@@ -191,7 +248,7 @@ export default {
   height:45px;
   margin:15px;
   padding:0px;
-  background-color: rgb(98, 144, 228);
+  background-color: rgb(84, 122, 247);
   border-radius: 10px;
   color: white;
   border: none;
@@ -211,7 +268,7 @@ export default {
 .cancel-button{
   height:45px;
   margin:15px;
-  background-color: rgb(98, 144, 228);
+  background-color: rgb(84, 122, 247);
   border-radius: 10px;
   color: white;
   border: none;

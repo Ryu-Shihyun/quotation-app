@@ -1,11 +1,11 @@
 <template>
   <div class="home">
     <!-- ドラックされているとき、色を暗くする -->
-    <div class="drag-and-drop" @drop.prevent="dropFile" @dragover.prevent>
+    <div class="drag-and-drop" @drop.prevent="dropFile" @dragover.prevent :class={dragPerform:isDrag} @dragenter="dragColor" @dragleave="dragNomal">
       <!-- 周りと色を違くする -->
       <!-- drop,dragoverでファイルのドラック＆ドロップを実装 -->
       
-      <img src="" alt="pdf-icon">
+      <img src="@/assets/pdf_icon2.png" alt="pdf-icon">
       <!-- .pdfのイメージ -->
 
       <div class="select-button">
@@ -34,6 +34,7 @@ export default {
   data(){
     return{
       files:[],// ファイルの配列
+      isDrag:false
     }
   },
   methods:{
@@ -50,6 +51,12 @@ export default {
       let files = Array.from(e.target.files);
       this.files=files
       this.$emit("handOverFile",this.files)
+    },
+    dragColor(){
+      this.isDrag=true;
+    },
+    dragNomal(){
+      this.isDrag=false;
     }
   },
   mounted(){
@@ -65,27 +72,39 @@ export default {
   width:100%;
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;
 }
 .drag-and-drop{
   display: flex;
   justify-content: space-evenly;
+  align-items:center;
   flex-direction: column;
   margin:2em;
   padding: 1em;
-  height:80%;
+  height:60%;
   width:80%;
-  background-color: rgb(236, 236, 236);
+  background-color: rgb(240, 240, 240);
 }
+
+.drag-and-drop img{
+  height:200px;
+  width:200px;
+}
+
+.dragPerform{
+  opacity:0.3;
+}
+
 .select-button{
   /* margin-left:70px; */
   height:70px;
   width:100%;
   display:flex;
   justify-content: flex-start;
-  background-color: rgb(98, 144, 228);
+  background-color: rgb(84, 122, 247);
   border-radius: 30px;
   color: white;
+  position: relative;
 }
 .select-button h1{
   margin-top:17px;
@@ -100,7 +119,7 @@ export default {
   opacity: 0;
   position: absolute;
   height:70px;
-  
+  width:100%;
 
 }
 </style>

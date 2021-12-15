@@ -14,10 +14,13 @@
         <div class="app-name">自動査定システム</div>
         <div class="page-name">{{webName}}</div>
         <ul class="header-ui">
+          <li @click="changeToSetting">
+            <img src="@/assets/lock.png" alt="logout">
+            <p>パスワード変更</p>
+          </li>
           <li @click="displayLog">
-            <img src="" alt="log">
-            履歴
-
+            <img src="@/assets/history.png" alt="log">
+            <p>履歴</p>
             <!-- v-forで日時データの配列をもとに日時を
              ドロップダウンメニューのリストとしてだす -->
             <!-- router-link to="/fileData"
@@ -32,8 +35,8 @@
             </ul>
           </li>
           <li @click="logOut">
-            <img src="" alt="logout">
-            ログアウト
+            <img src="@/assets/logout.png" alt="logout">
+            <p>ログアウト</p>
           </li>
         </ul>
       </div>
@@ -118,6 +121,9 @@ export default {
       }else{
         log.style.display = "none";
       }
+    },
+    changeToSetting(){
+      this.$router.push("/loginSetting")
     }
 
   },
@@ -126,6 +132,7 @@ export default {
     // function(){
     // effects isLoginをtrue
     // }
+    /*
     $route(){
       if(this.$route.path=="/" || this.$route.path=="/fileData/edit"){
         this.webName="見積査定"
@@ -133,6 +140,7 @@ export default {
         this.webName="履歴"
       }
     }
+    */
   }
 }
 </script>
@@ -159,7 +167,7 @@ body{
   justify-content: space-between;
   border-block-end: solid;
   border-block-end-color: #e6e6e6;
-
+  position: relative;
 }
 
 #nav a {
@@ -173,6 +181,7 @@ body{
 
 .app-name{
   margin-top:10px;
+  margin-right: 40px;
   font-size: 20px;
   font-weight: 700;
 }
@@ -184,18 +193,40 @@ body{
 
 .header-ui{
   display: flex;
-  justify-content: space-between;
+  justify-content: space-around;
   padding:0px;
+  margin-top:6px;
+  margin-bottom:3px;
+  height:100%;
   /* width:200px */
 }
 
-.header-ui li{
-  padding-left:10px;
+.header-ui > li{
+  margin:0px 10px 0px 10px;
+  width: 80px;
   display:flex;
   flex-direction:column;
+  align-items: center;
   position: relative;
 }
 
+.header-ui > li img{
+  height: 30px;
+  width:30px;
+}
+.header-ui > li>p{
+  font-size: 15px;
+  width:150px;
+  text-align: center;
+  position:absolute;
+  bottom:-17px;
+}
+.header-ui > li:hover img{
+  opacity: 0.3;
+}
+.header-ui > li:hover p{
+  opacity:0.3;
+}
 
 .header-ui ul{
   display: none;
@@ -209,6 +240,7 @@ body{
   position: absolute;
   background-color: rgb(236, 236, 236);
 }
+
 .log-date{
   height: 15px;
   margin: 10px;
