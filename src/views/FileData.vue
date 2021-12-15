@@ -3,7 +3,7 @@
     <div class="file-view">
       <!-- アップロードしたファイルを並べるエリア -->
       <div class="view-header">
-        <div class="add-button">
+        <div class="add-button" id="add-button">
           <div class="file-num"><p>{{files.length}}</p></div>
           <h1>+</h1>
           <input type="file" name="file" accept=".pdf" @change="addFile" multiple>
@@ -21,14 +21,19 @@
     <div class="file-manager">
       <!-- 見積査定、一括ダウンロード、取消 or 新規査定 -->
       <p>PDfからEXCEL</p>
-      <button :class="changeButton(true)" v-bind:disabled="isComplete">見積査定</button>
+      <!-- <button :class="changeButton(true)" v-bind:disabled="isComplete">見積査定</button> -->
+      <div class="message-log">
+        ファイルを追加すると処理を開始します。<br>
+        現在の処理対象は<span class="message-num">{{files.length}}ファイル</span>です。<br> <br>
+        <span class="message-small">(同時に処理できるファイルは30個までです)</span>
+      </div>
       <p>
-        準備が整ったら、見積査定ボタンを押してください
+        {{message}}
         <!-- Messageに変更予定。履歴からのアクセスか、
              ファイルドロップからのアクセスか、見積査定状態かによって変わる -->
       </p>
-      <button :class="changeButton(false)" v-bind:disabled="isComplete">一括ダウンロード</button>
-      <router-link to="/" class="cancel-button"><p>取消</p></router-link>
+      <button :class="changeButton(false)" v-bind:disabled="!isComplete">一括ダウンロード</button>
+      <button class="cancel-button" :class="changeButton(false)" v-bind:disabled="!isComplete" @click="moveToTop"><p>新規見積査定開始</p></button>
     </div>
   </div>
 </template>
@@ -45,8 +50,8 @@ export default {
       date:"",//日付
       isAbleToDrop:true,//ドロップ許可のtrue or false
       isComplete:false,// 送信の完了のtrue or false
-      Message:"",//状態のメッセージ
       isUpload:true,
+      message:"処理が完了しました。"
     }
   },
   methods:{
@@ -114,6 +119,17 @@ export default {
         }
       }
     },
+    moveToTop(){
+      this.$router.push("/");
+    },
+    changeAddButton(){
+      const addButton=document.getElementById("add-button")
+      if(this.file.length>=30 || this.isComplete){
+        addButton.style.backgroundColor="#cccccc";
+      }else{
+        addButton.style.backgroundColor="#548ffc";
+      }
+    }
   },
   mounted(){
     // let reader = new FileReader()
@@ -123,6 +139,10 @@ export default {
     this.files = this.data
     this.date = this.log
     this.isComplete = (this.log!="")
+    if(this.$route.path=="/fileData/edit" && this.files.length==0){
+      this.$router.push("/")
+      //console.log("OK")
+    }
   },
   // inheritAttrs:false,
   watch:{
@@ -132,12 +152,22 @@ export default {
       this.files = this.data
       this.date = this.log
       this.isComplete = (this.log!="")
+      
+    },
+    isComplete(){
+      this.changeAddButton;
+    },
+    files(){
+      this.changeAddButton;
     }
   },
   created: function () {
     window.onbeforeunload = function () {
+      // this.$router.push("/")
       return '保存されていないデータは破棄されます。'
+      
     }
+    
  },
 destroyed () {
     window.onbeforeunload = null
@@ -244,6 +274,14 @@ destroyed () {
 .assessment-button{
   height:60px;
 }
+
+.message-num{
+  color:rgb(84, 122, 247); 
+}
+.message-small{
+  font-size:12px;
+}
+
 .button-true{
   height:45px;
   margin:15px;
@@ -266,11 +304,7 @@ destroyed () {
   padding:0px;
 }
 .cancel-button{
-  height:45px;
-  margin:15px;
-  background-color: rgb(84, 122, 247);
-  border-radius: 10px;
-  color: white;
+  
   border: none;
   text-decoration: none;
   
