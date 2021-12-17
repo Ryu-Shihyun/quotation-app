@@ -1,12 +1,12 @@
 <template>
   <div class="home">
-    <div class="file-view">
+    <div id="file-views" v-bind:class="{'file-view':!(files.length>=30 || isComplete),'file-view-f':(files.length>=30 || isComplete),performFileView:isDrag}" @drop.prevent="dropFile" @dragover.prevent   @dragover="dragColor" @dragleave="dragNomal">
       <!-- アップロードしたファイルを並べるエリア -->
       <div class="view-header">
-        <div class="add-button" id="add-button">
+        <div class="add-button" id="add-button" :class="{'add-button':!(files.length>=30 || isComplete),'add-button-f':(files.length>=30 || isComplete)}">
           <div class="file-num"><p>{{files.length}}</p></div>
           <h1>+</h1>
-          <input type="file" name="file" accept=".pdf" @change="addFile" multiple>
+          <input class="add-input" type="file" name="file" accept=".pdf" @change="addFile" multiple :disabled="(files.length>=30 || isComplete)">
         </div>
         <div class="number-and-date">  {{assess_num}}<br/>{{date}}</div>
       </div>
@@ -14,6 +14,7 @@
         <!-- <iframe src="${file.name}" width="400px" heitght="600px"></iframe> -->
         <button @click="removeFile(k)">x</button>
         <img src="@/assets/pdf_icon2.jpeg" alt="">
+        <img src="@/assets/support-loading.gif" alt="" :class="loadImgClass">
         <div>{{file.name}}</div>
         
       </div>
@@ -48,10 +49,12 @@ export default {
       ID:"",//ユーザID
       jobNum :"",// 処理number
       date:"",//日付
-      isAbleToDrop:true,//ドロップ許可のtrue or false
+      isAbleToUpload:true,//アップロード許可のtrue or false
       isComplete:false,// 送信の完了のtrue or false
       isUpload:true,
-      message:"処理が完了しました。"
+      message:"処理が完了しました。",
+      isDrag:false,
+      loadImgClass:"load-gif-f"
     }
   },
   methods:{
@@ -79,6 +82,7 @@ export default {
     download(){
       // require 一括ダウンロードを押されたとき
       // effect  zipでダウンロードする
+      
     },
     addFile(e){
       // require 押されるイベントが起こったとき
@@ -95,14 +99,6 @@ export default {
       //         ファイルのインデックスを取得
       // effect  filesからそのインデックスの要素をsplice
       this.files.splice(k,1);
-    },
-    dropFile(){
-      //require ドロップ許可がtrueの時
-      //effect ファイルの配列にドロップしたファイルを代入
-      if(this.isAbleToDrop){
-        this.files = [...event.dataTransfer.files];
-      }
-      
     },
     changeButton(isAssessment){
       if(isAssessment){
@@ -122,13 +118,35 @@ export default {
     moveToTop(){
       this.$router.push("/");
     },
-    changeAddButton(){
-      const addButton=document.getElementById("add-button")
+    /*
+    changeUploadUI(){
       if(this.file.length>=30 || this.isComplete){
-        addButton.style.backgroundColor="#cccccc";
+        this.isAbleToUpload=false
+       
       }else{
-        addButton.style.backgroundColor="#548ffc";
+        this.isAbleToUpload=true
       }
+    },
+    */ 
+    dropFile(){
+      //effects  ファイルの配列にドロップしたファイルを代入
+      if(this.isAbleToUpload){
+        let newFiles = [...event.dataTransfer.files];
+        for(let i=0;i<newFiles.length;i++){
+          this.files.push(newFiles[i]);
+        }
+      }
+    },
+    dragColor(){
+      if(this.isAbleToUpload){
+        this.isDrag=true;
+      }
+    },
+    dragNomal(){
+     this.isDrag=false;
+    },
+    changeLoadGif(){
+
     }
   },
   mounted(){
@@ -136,9 +154,11 @@ export default {
     // this.data.forEach(el => {
     //   this.files.push({data:el, url:reader.readAsDataURL(el)})
     // });
+   
     this.files = this.data
     this.date = this.log
-    this.isComplete = (this.log!="")
+    this.isComplete = (this.log!="") 
+    // this.changeUploadUI
     if(this.$route.path=="/fileData/edit" && this.files.length==0){
       this.$router.push("/")
       //console.log("OK")
@@ -149,16 +169,20 @@ export default {
     $route(){
       this.data.length=0;//ここでデータをサーバからとる
                         // 今は初期化しているが、サーバ取得の関数に後ほど変更
+      
       this.files = this.data
       this.date = this.log
       this.isComplete = (this.log!="")
+      // this.changeUploadUI;
       
     },
     isComplete(){
-      this.changeAddButton;
+      // this.changeUploadUI;
+      // console.log(this.isComplete)
     },
     files(){
-      this.changeAddButton;
+      // this.changeUploadUI;
+      // console.log(this.files.length)
     }
   },
   created: function () {
@@ -186,7 +210,19 @@ destroyed () {
 .file-view{
   height: 100%;
   width:75%;
+  background-color: rgb(240,240,240);
 }
+
+.file-view-f{
+  height: 100%;
+  width:75%;
+  background-color: white;
+}
+
+.performFileView{
+  background-color: rgba(240,240,240,0.4);
+}
+
 .view-header{
   height: 90px;
   margin-bottom: 10px;
@@ -205,7 +241,22 @@ destroyed () {
   color: white;
 }
 
-.add-button input[type="file"]{
+.add-button-f{
+  margin-left:40px;
+  height:60px;
+  width:60px;
+  margin-top:20px;
+  display:flex;
+  position: absolute;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+  background-color: rgb(204, 204, 204);
+  color: white;
+}
+
+
+.add-input{
   opacity: 0;
   position: absolute;
   height: 60px;
@@ -253,9 +304,24 @@ destroyed () {
   top:-4px;
 }
 .file-item img{
-  height:200px;
-  width:200px;
+  height:150px;
+  width:150px;
 }
+
+.load-gif{
+  position: absolute;
+  left: -2px;
+  bottom:1px;
+  opacity: 1;
+}
+
+.load-gif-f{
+  position: absolute;
+  left: -2px;
+  bottom:1px;
+  opacity: 0;
+}
+
 .file-item div{
   font-size:6px;
   position: absolute;
@@ -283,7 +349,7 @@ destroyed () {
 }
 
 .button-true{
-  height:45px;
+  height:60px;
   margin:15px;
   padding:0px;
   background-color: rgb(84, 122, 247);
@@ -294,7 +360,7 @@ destroyed () {
   
 }
 .button-false{
-  height:45px;
+  height:60px;
   margin:15px;
   background-color: rgb(204, 204, 204);
   border-radius: 10px;

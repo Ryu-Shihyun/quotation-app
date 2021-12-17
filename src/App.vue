@@ -235,10 +235,12 @@ body{
   margin:5px;
   padding: 0px;
   border: solid;
+  border-color:rgb(156, 156, 156);
   margin-top:50px;
   right: 5px;
   position: absolute;
   background-color: rgb(236, 236, 236);
+  overflow-y:scroll;
 }
 
 .log-date{

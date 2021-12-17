@@ -1,7 +1,7 @@
 <template>
   <div class="home">
     <!-- ドラックされているとき、色を暗くする -->
-    <div class="drag-and-drop" @drop.prevent="dropFile" @dragover.prevent :class={dragPerform:isDrag} @dragenter="dragColor" @dragleave="dragNomal">
+    <div class="drag-and-drop" @drop.prevent="dropFile" @dragover.prevent :class={dragPerform:isDrag} @dragover="dragColor" @dragleave="dragNomal">
       <!-- 周りと色を違くする -->
       <!-- drop,dragoverでファイルのドラック＆ドロップを実装 -->
       
@@ -92,7 +92,7 @@ export default {
 }
 
 .dragPerform{
-  opacity:0.3;
+  opacity:0.4;
 }
 
 .select-button{
