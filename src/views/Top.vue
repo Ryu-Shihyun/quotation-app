@@ -41,7 +41,13 @@ export default {
     dropFile(){
       //effects  ファイルの配列にドロップしたファイルを代入
       //         ファイルを入手後に親にファイルの配列をemit
-      this.files = [...event.dataTransfer.files];
+      let recieveFiles= [...event.dataTransfer.files];
+      for(let i=0;i<recieveFiles.length;i++){
+        let extention = recieveFiles[i].name.split(".").pop()
+        if(extention == "pdf"){
+          this.files.push(recieveFiles[i])
+        }
+      }
       this.$emit("handOverFile",this.files)
     },
     selectedFile(e){
@@ -105,14 +111,17 @@ export default {
   border-radius: 30px;
   color: white;
   position: relative;
+  cursor: pointer;
 }
 .select-button h1{
   margin-top:17px;
   width:100px;
+  cursor: pointer;
 }
 .select-button h4{
   width:80%;
   text-align: center;
+  cursor: pointer;
 }
 
 .select-button input[type="file"]{
@@ -120,6 +129,6 @@ export default {
   position: absolute;
   height:70px;
   width:100%;
-
+  cursor: pointer;
 }
 </style>

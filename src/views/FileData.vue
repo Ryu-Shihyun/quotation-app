@@ -3,18 +3,19 @@
     <div id="file-views" v-bind:class="{'file-view':!(files.length>=30 || isComplete),'file-view-f':(files.length>=30 || isComplete),performFileView:isDrag}" @drop.prevent="dropFile" @dragover.prevent   @dragover="dragColor" @dragleave="dragNomal">
       <!-- アップロードしたファイルを並べるエリア -->
       <div class="view-header">
-        <div class="add-button" id="add-button" :class="{'add-button':!(files.length>=30 || isComplete),'add-button-f':(files.length>=30 || isComplete)}">
+        <div id="add-button" :class="{'add-button':!(files.length>=30 || isComplete),'add-button-f':(files.length>=30 || isComplete)}">
+          <input class="add-input" :class="{'add-pointer':!(files.length>=30 || isComplete)}" type="file" name="file" accept=".pdf" @change="addFile" multiple :disabled="(files.length>=30 || isComplete)">
           <div class="file-num"><p>{{files.length}}</p></div>
-          <h1>+</h1>
-          <input class="add-input" type="file" name="file" accept=".pdf" @change="addFile" multiple :disabled="(files.length>=30 || isComplete)">
+          <h1 :class="{'add-pointer':!(files.length>=30 || isComplete)}">+</h1>
+          <!-- <input class="add-input" type="file" name="file" accept=".pdf" @change="addFile" multiple :disabled="(files.length>=30 || isComplete)"> -->
         </div>
         <div class="number-and-date">  {{assess_num}}<br/>{{date}}</div>
       </div>
       <div v-for="(file,k) in files" v-bind:key="k" class="file-item">
         <!-- <iframe src="${file.name}" width="400px" heitght="600px"></iframe> -->
-        <button @click="removeFile(k)">x</button>
+        <button @click="removeFile(k)" :disabled="loadImgClass(k)" :class="{'delete-button':!loadImgClass(k),'delete-button-f':loadImgClass(k)}">x</button>
         <img src="@/assets/pdf_icon2.jpeg" alt="">
-        <img src="@/assets/support-loading.gif" alt="" :class="loadImgClass">
+        <img src="@/assets/support-loading.gif" alt="" v-if="loadImgClass(k)" class="load-gif">
         <div>{{file.name}}</div>
         
       </div>
@@ -52,9 +53,10 @@ export default {
       isAbleToUpload:true,//アップロード許可のtrue or false
       isComplete:false,// 送信の完了のtrue or false
       isUpload:true,
-      message:"処理が完了しました。",
+      message:"処理中です。しばらくお待ちください。",
       isDrag:false,
-      loadImgClass:"load-gif-f"
+      // loadImgClass:"load-gif-f"
+      loadIndex:0,
     }
   },
   methods:{
@@ -145,8 +147,12 @@ export default {
     dragNomal(){
      this.isDrag=false;
     },
-    changeLoadGif(){
-
+    loadImgClass(index){
+      if(this.loadIndex==index){
+        return true
+      }else{
+        return false
+      }
     }
   },
   mounted(){
@@ -239,6 +245,7 @@ destroyed () {
   border-radius: 50%;
   background-color: rgb(84, 122, 247);
   color: white;
+  cursor: pointer;
 }
 
 .add-button-f{
@@ -255,13 +262,16 @@ destroyed () {
   color: white;
 }
 
+.add-pointer{
+  cursor: pointer;
+}
 
 .add-input{
   opacity: 0;
   position: absolute;
   height: 60px;
   width:60px;
-
+  
 }
 
 .file-num{
@@ -287,16 +297,31 @@ destroyed () {
 }
 .file-item{
   float:left;
+  height:150px;
+  width:150px;
   position:relative;
   border: solid;
   border-width: 1px;
+  border-color:rgb(223, 223, 223);
   margin:5px;
 }
-.file-item button{
+.delete-button{
   position:absolute;
   border-radius: 50%;
   background-color: black;
   color:white;
+  height: 20px;
+  width:20px;
+  border-width: 0px;
+  right:-4px;
+  top:-4px;
+  cursor: pointer;
+}
+.delete-button-f{
+  position:absolute;
+  border-radius: 50%;
+  background-color: rgb(204, 204, 204);
+  color:black;
   height: 20px;
   width:20px;
   border-width: 0px;
@@ -357,7 +382,7 @@ destroyed () {
   color: white;
   border: none;
   font-size: 15px;
-  
+  cursor: pointer;
 }
 .button-false{
   height:60px;

@@ -11,7 +11,7 @@
       <div id="nav"> 
         <!-- header -->
         <!-- 「自動査定システム」、ウェブの題名(見積査定、履歴) -->
-        <div class="app-name">自動査定システム</div>
+        <div class="app-name" @click="moveToTop">自動査定システム</div>
         <div class="page-name">{{webName}}</div>
         <ul class="header-ui">
           <li @click="changeToSetting">
@@ -63,7 +63,7 @@ export default {
       assessmentNumber:["xxxxxxxxxx","oooooooooo","aaaaaaaaa"],
       selected_date:"",//履歴で選択された日時のデータ(Date() or String)
       datesArray:["2021-12-04","2021-12-03","2021-11-23"],//サーバから入手した日時のデータの配列（新しい順にソート済み)
-      webName:"見積査定",// webページの題名
+      webName:"",// webページの題名
       ID:"",// ユーザID
     }
   },
@@ -79,7 +79,9 @@ export default {
         // this.files.length = 0;
       }
     },
-    
+    moveToTop(){
+      this.$router.push("/");
+    },
     changeToLog(date){
       //requires 履歴で選択された時、TopからかFileDataからか
       //effects Topだったらprops指定して遷移
@@ -141,6 +143,10 @@ export default {
       }
     }
     */
+  },
+  mounted(){
+    const log = document.getElementById("log-menue")
+    log.style.display = "none";
   }
 }
 </script>
@@ -184,11 +190,18 @@ body{
   margin-right: 40px;
   font-size: 20px;
   font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow:ellipsis;
+  cursor: pointer;
 }
 
 .page-name{
   margin-top:20px;
   font-size:18px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow:ellipsis;
 }
 
 .header-ui{
@@ -208,6 +221,7 @@ body{
   flex-direction:column;
   align-items: center;
   position: relative;
+  cursor:pointer;
 }
 
 .header-ui > li img{
@@ -230,6 +244,7 @@ body{
 
 .header-ui ul{
   display: none;
+  cursor:auto;
   width:200px;
   height: 200px;
   margin:5px;
